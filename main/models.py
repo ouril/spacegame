@@ -1,9 +1,20 @@
+from enum import Enum
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from fleet.models import TimeStampedModel, SpaceMap, Unit, Region, Ability, Equipment
 
 
 # Create your models here.
+
+class OrderType(Enum):
+    ENTER = "ST"
+    DEFENSE = "DF"
+    ABILITY = "AB"
+    ATTACK = "AT"
+    MOVE = "MV"
+    ACTIVATE = "AC"
+
 
 class Game(TimeStampedModel):
     game_map = models.ForeignKey(
@@ -30,7 +41,7 @@ class User(AbstractUser):
     profile = models.OneToOneField(
         GameProfile,
         on_delete=models.DO_NOTHING,
-        verbose_name="user"
+        related_name="user"
     )
 
 
@@ -94,6 +105,7 @@ class Order(TimeStampedModel):
         null=True,
         blank=True
     )
+    number = models.PositiveSmallIntegerField(default=0)
 
     def __str__(self):
         return f'{self.profile.name}  order for {self.unit.name} at {self.action}'
@@ -111,3 +123,15 @@ class Order(TimeStampedModel):
         pass
 
 
+class OrderError(TimeStampedModel):
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name="error"
+    )
+
+    type_order = models.PositiveSmallIntegerField(default=0)
+    comment = models.CharField(max_length=512, blank=True, null=True)
+
+    def __str__(self):
+        return f'Error {self.order.unit.name} in {self.order.number} {self.type_order}'
