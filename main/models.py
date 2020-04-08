@@ -5,8 +5,6 @@ from django.db import models
 from fleet.models import TimeStampedModel, SpaceMap, Unit, Region, Ability, Equipment
 
 
-# Create your models here.
-
 class OrderType(Enum):
     ENTER = "ST"
     DEFENSE = "DF"
@@ -17,10 +15,18 @@ class OrderType(Enum):
 
 
 class Game(TimeStampedModel):
+    name = models.CharField(
+        primary_key=True,
+        max_length=256,
+        unique=True
+    )
     game_map = models.ForeignKey(
         SpaceMap,
         on_delete=models.DO_NOTHING
     )
+
+    def __str__(self):
+        return self.name
 
 
 class GameProfile(TimeStampedModel):
@@ -36,6 +42,9 @@ class GameProfile(TimeStampedModel):
     orders = models.PositiveSmallIntegerField()
     current_order = models.PositiveSmallIntegerField()
 
+    def __str__(self):
+        return self.name
+
 
 class User(AbstractUser):
     profile = models.OneToOneField(
@@ -43,6 +52,9 @@ class User(AbstractUser):
         on_delete=models.DO_NOTHING,
         related_name="user"
     )
+
+    def __str__(self):
+        return self.username
 
 
 class Action(TimeStampedModel):
@@ -53,6 +65,9 @@ class Action(TimeStampedModel):
     number = models.PositiveSmallIntegerField(
         default=0
     )
+
+    def __str__(self):
+        return f"{self.game.name} action {self.number}"
 
 
 class Order(TimeStampedModel):
@@ -134,4 +149,4 @@ class OrderError(TimeStampedModel):
     comment = models.CharField(max_length=512, blank=True, null=True)
 
     def __str__(self):
-        return f'Error {self.order.unit.name} in {self.order.number} {self.type_order}'
+        return f'Error {self.order.unit.name} in {self.order.action} {self.type_order}'

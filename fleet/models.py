@@ -5,8 +5,6 @@ from main.models import User, GameProfile, OrderError, Order
 from enum import Enum
 
 
-# Create your models here.
-
 class AttackType(Enum):
     SHOT = 0
     CLOSE = 1
@@ -161,6 +159,9 @@ class Ability(models.Model):
         on_delete=models.CASCADE,
         related_name='abil'
     )
+
+    def __str__(self):
+        return self.name
 
 
 class Equipment(models.Model):
