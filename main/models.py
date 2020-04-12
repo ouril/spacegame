@@ -2,7 +2,7 @@ from enum import Enum
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from fleet.models import TimeStampedModel, SpaceMap, Unit, Region, Ability, Equipment
+from fleet.models import TimeStampedModel, SpaceMap, Unit, Region, Ability, Equipment, AttackType
 
 
 class OrderType(Enum):
@@ -71,13 +71,19 @@ class Action(TimeStampedModel):
 
 
 class Order(TimeStampedModel):
+    ST = "ST"
+    MV = "MV"
+    AT = "AT"
+    DF = "DF"
+    AB = "AB"
+    AC = "AC"
     order_types = [
-        ('ST', "Start"),
-        ('MV', 'Move'),
-        ('AT', 'Attack'),
-        ('DF', 'Defence'),
-        ('AB', 'Ability'),
-        ('AC', 'Activate'),
+        (ST, "Start"),
+        (MV, 'Move'),
+        (AT, 'Attack'),
+        (DF, 'Defence'),
+        (AB, 'Ability'),
+        (AC, 'Activate'),
     ]
     order_type = models.CharField(
         max_length=2,
@@ -120,7 +126,12 @@ class Order(TimeStampedModel):
         null=True,
         blank=True
     )
-    number = models.PositiveSmallIntegerField(default=0)
+    attack_type = models.ForeignKey(
+        AttackType,
+        on_delete=models.DO_NOTHING,
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return f'{self.profile.name}  order for {self.unit.name} at {self.action}'
@@ -136,6 +147,26 @@ class Order(TimeStampedModel):
 
     def _move(self):
         pass
+
+    def _start(self):
+        pass
+
+    def _activate(self):
+        pass
+
+    def fulfill_order(self):
+        if self.order_type == self.AB:
+            self._use_abil()
+        elif self.order_type == self.AC:
+            self._activate()
+        elif self.order_type == self.AT:
+            self._attack()
+        elif self.order_type == self.ST:
+            self._start()
+        elif self.order_type == self.DF:
+            self._defence()
+        elif self.order_type == self.MV:
+            self._move()
 
 
 class OrderError(TimeStampedModel):

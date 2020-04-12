@@ -4,12 +4,7 @@ from django.db import models
 from main.models import User, GameProfile, OrderError, Order
 from enum import Enum
 
-
-class AttackType(Enum):
-    SHOT = 0
-    CLOSE = 1
-    CRITICAL = 2
-    DEAD = 3
+DEAD_LOCATION = "dead_location"
 
 
 class TimeStampedModel(models.Model):
@@ -24,16 +19,11 @@ class SpaceMap(TimeStampedModel):
     name = models.CharField(max_length=256, primary_key=True, unique=True)
     description = models.TextField(blank=True, null=True)
 
-    def set_to_dead_location(self, unit: UUID):
-        # TODO: Add find to dead location
-        pass
-
     def __str__(self):
         return self.name
 
 
 class Region(TimeStampedModel):
-    is_dead_region = models.BooleanField()
     name = models.CharField(max_length=256, primary_key=True, unique=True)
     description = models.TextField(blank=True, null=True)
     space_map = models.ForeignKey(
@@ -124,7 +114,7 @@ class Unit(TimeStampedModel):
     )
 
     def set_to_dead(self):
-        self.location.space_map.set_to_dead_location(unit=self.id)
+        self.location = Region.objects.get(name=DEAD_LOCATION)
 
     def damage(self, damage: int):
         if self.current_params.health >= damage:
@@ -136,7 +126,7 @@ class Unit(TimeStampedModel):
         if self.current_params.health == 0:
             self.set_to_dead()
 
-        self.save()
+        # self.save()
 
     def move(self, location: Region, order: Order):
         if RegionConnection.is_neighbour(self.location, location):
@@ -148,6 +138,26 @@ class Unit(TimeStampedModel):
 
     def __str__(self):
         return self.name
+
+
+class AttackType(models.Model):
+    name = models.CharField(max_length=256, unique=True)
+    desc = models.TextField(max_length=2048, blank=True, default="")
+    unit = models.ForeignKey(
+        Unit,
+        on_delete=models.DO_NOTHING,
+        related_name="attacktype"
+    )
+
+
+class UnitType(models.Model):
+    name = models.CharField(max_length=256, unique=True)
+    desc = models.TextField(max_length=2048, blank=True, default="")
+    unit = models.ForeignKey(
+        Unit,
+        on_delete=models.DO_NOTHING,
+        related_name="unittype"
+    )
 
 
 class Ability(models.Model):
