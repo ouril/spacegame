@@ -2,7 +2,8 @@ from enum import Enum
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from fleet.models import TimeStampedModel, SpaceMap, Unit, Region, Ability, Equipment, AttackType
+from fleet.models import TimeStampedModel, SpaceMap, Unit, Region, Ability, Equipment
+from main.attack_function import AttackType
 
 
 class OrderType(Enum):
@@ -12,6 +13,23 @@ class OrderType(Enum):
     ATTACK = "AT"
     MOVE = "MV"
     ACTIVATE = "AC"
+
+
+ST = "ST"
+MV = "MV"
+AT = "AT"
+DF = "DF"
+AB = "AB"
+AC = "AC"
+
+ORDER_TYPE = (
+        (ST, "Start"),
+        (MV, 'Move'),
+        (AT, 'Attack'),
+        (DF, 'Defence'),
+        (AB, 'Ability'),
+        (AC, 'Activate'),
+    )
 
 
 class Game(TimeStampedModel):
@@ -71,23 +89,9 @@ class Action(TimeStampedModel):
 
 
 class Order(TimeStampedModel):
-    ST = "ST"
-    MV = "MV"
-    AT = "AT"
-    DF = "DF"
-    AB = "AB"
-    AC = "AC"
-    order_types = [
-        (ST, "Start"),
-        (MV, 'Move'),
-        (AT, 'Attack'),
-        (DF, 'Defence'),
-        (AB, 'Ability'),
-        (AC, 'Activate'),
-    ]
     order_type = models.CharField(
         max_length=2,
-        choices=order_types,
+        choices=ORDER_TYPE,
         default='ST'
     )
     action = models.ForeignKey(

@@ -140,15 +140,6 @@ class Unit(TimeStampedModel):
         return self.name
 
 
-class AttackType(models.Model):
-    name = models.CharField(max_length=256, unique=True)
-    desc = models.TextField(max_length=2048, blank=True, default="")
-    unit = models.ForeignKey(
-        Unit,
-        on_delete=models.DO_NOTHING,
-        related_name="attacktype"
-    )
-
 
 class UnitType(models.Model):
     name = models.CharField(max_length=256, unique=True)
