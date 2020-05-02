@@ -8,6 +8,23 @@ from django.db import models
 
 DEAD_LOCATION = "dead_location"
 
+ST = "ST"
+MV = "MV"
+AT = "AT"
+DF = "DF"
+AB = "AB"
+AC = "AC"
+
+ORDER_TYPE = (
+    (ST, "Start"),
+    (MV, 'Move'),
+    (AT, 'Attack'),
+    (DF, 'Defence'),
+    (AB, 'Ability'),
+    (AC, 'Activate'),
+)
+
+
 
 class TimeStampedModel(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
@@ -49,9 +66,13 @@ class GameProfile(TimeStampedModel):
     game = models.ForeignKey(
         Game,
         on_delete=models.DO_NOTHING,
-        null=True
+        null=True,
+        blank=True
     )
-    user = models.OneToOneField(User, on_delete=models.DO_NOTHING)
+    user = models.OneToOneField(
+        User,
+        on_delete=models.DO_NOTHING
+    )
     orders = models.PositiveSmallIntegerField()
     current_order = models.PositiveSmallIntegerField()
 
@@ -127,19 +148,23 @@ class Unit(TimeStampedModel):
         null=True,
         blank=True
     )
+    pic = models.ImageField(
+        blank=True,
+        null=True
+    )
 
     def set_to_dead(self):
         self.location = Region.objects.get(name=DEAD_LOCATION)
 
-    def damage(self, damage: int):
-        if self.current_params.health >= damage:
-            self.current_params.health = self.current_params.health - damage
-
-        else:
-            self.current_params.health = 0
-
-        if self.current_params.health == 0:
-            self.set_to_dead()
+    # def damage(self, damage: int):
+    #     if self.current_params.health >= damage:
+    #         self.current_params.health = self.current_params.health - damage
+    #
+    #     else:
+    #         self.current_params.health = 0
+    #
+    #     if self.current_params.health == 0:
+    #         self.set_to_dead()
 
         # self.save()
 
@@ -226,21 +251,6 @@ class Equipment(models.Model):
 #     ACTIVATE = "AC"
 
 
-ST = "ST"
-MV = "MV"
-AT = "AT"
-DF = "DF"
-AB = "AB"
-AC = "AC"
-
-ORDER_TYPE = (
-    (ST, "Start"),
-    (MV, 'Move'),
-    (AT, 'Attack'),
-    (DF, 'Defence'),
-    (AB, 'Ability'),
-    (AC, 'Activate'),
-)
 
 
 # class User(AbstractUser):
