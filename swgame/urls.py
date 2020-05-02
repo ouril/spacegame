@@ -17,11 +17,13 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 from rest_framework.routers import DefaultRouter
-from main.views import UnitViewSet
+from main.views import UnitViewSet, GameViewSet, PlayersViewSet
 
 
 routers = DefaultRouter()
 routers.register(r'units', UnitViewSet, basename="units")
+routers.register(r'games', GameViewSet, basename="games")
+routers.register(r'players', PlayersViewSet, basename="players")
 
 
 urlpatterns = [
