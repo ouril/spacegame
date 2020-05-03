@@ -24,5 +24,5 @@ class PlayersViewSet(viewsets.ViewSet):
 class GameViewSet(viewsets.ViewSet):
     def list(self, request):
         queryset = Game.objects.all()
-        serializer = GameSerializer(queryset, many=True)
+        serializer = GamesSerializer(queryset, many=True)
         return Response(serializer.data)

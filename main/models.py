@@ -35,7 +35,7 @@ class TimeStampedModel(models.Model):
 
 
 class SpaceMap(TimeStampedModel):
-    name = models.CharField(max_length=256, primary_key=True, unique=True)
+    name = models.CharField(max_length=256, unique=True)
     description = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -44,13 +44,14 @@ class SpaceMap(TimeStampedModel):
 
 class Game(TimeStampedModel):
     name = models.CharField(
-        primary_key=True,
         max_length=256,
-        unique=True
+        unique=True,
+
     )
     game_map = models.ForeignKey(
         SpaceMap,
-        on_delete=models.DO_NOTHING
+        on_delete=models.DO_NOTHING,
+        related_name="game"
     )
 
     def __str__(self):
