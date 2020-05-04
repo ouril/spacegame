@@ -25,7 +25,6 @@ ORDER_TYPE = (
 )
 
 
-
 class TimeStampedModel(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -53,6 +52,8 @@ class Game(TimeStampedModel):
         on_delete=models.DO_NOTHING,
         related_name="game"
     )
+    is_in_process = models.BooleanField(default=False)
+    is_in_archive = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -121,7 +122,6 @@ class UnitClass(models.Model):
         return self.name
 
 
-
 class Unit(TimeStampedModel):
     # uuid = models.UUIDField(unique=True, auto_created=True, primary_key=True, blank=True, null=False)
     name = models.CharField(unique=True, max_length=256)
@@ -167,7 +167,7 @@ class Unit(TimeStampedModel):
     #     if self.current_params.health == 0:
     #         self.set_to_dead()
 
-        # self.save()
+    # self.save()
 
     # def move(self, location: Region, order: Order):
     #     if RegionConnection.is_neighbour(self.location, location):
@@ -203,9 +203,6 @@ class UnitParams(models.Model):
         if self.unit != None:
             return f"UnitParams {self.unit} current: {self.current}"
         return f"UnitParams {self.id}"
-
-
-
 
 
 class UnitType(models.Model):
@@ -250,8 +247,6 @@ class Equipment(models.Model):
 #     ATTACK = "AT"
 #     MOVE = "MV"
 #     ACTIVATE = "AC"
-
-
 
 
 # class User(AbstractUser):
