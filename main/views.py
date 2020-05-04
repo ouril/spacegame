@@ -6,11 +6,36 @@ from rest_framework.decorators import api_view
 
 import json
 
+from rest_framework.exceptions import APIException
+
 from main.models import Unit, Game, GameProfile
 from main.rpc_utils import JsonRPCData
 from .serializer import UnitsSerializer, PlayersSerializer, GamesSerializer
 from rest_framework import viewsets
 from rest_framework.response import Response
+
+GET_DATA_RPC = {"jsonrpc": "2.0", "methods": {
+    JsonRPCData.STOP: ['<game.name>'],
+    JsonRPCData.CALC: {
+        JsonRPCData.MethodKeys.GAME_NAME: '<game.name>',
+        JsonRPCData.MethodKeys.GAME_ACT: '<action.number>'
+    },
+    JsonRPCData.START: ['<game.name>'],
+    JsonRPCData.TURN: {
+        JsonRPCData.MethodKeys.GAME_NAME: '<game.name>',
+        JsonRPCData.MethodKeys.TURN_ACT: ['start', 'stop', 'remote']
+
+    },
+}}
+
+
+class BadCommand(APIException):
+    status_code = 400
+
+    def __init__(self, msg = 'Service temporarily unavailable, try again later.'):
+        self.default_detail = msg
+        self.detail = msg
+
 
 
 @api_view(['GET', 'POST'])
@@ -28,34 +53,28 @@ def turn(request):
     :return:
     """
 
-    if request.method == "POST":
-        data = request.data
-        print(data)
-        rpc = JsonRPCData(data)
-        if rpc.method == JsonRPCData.STOP:
-            rpc.set_result({'res': True})
-        res = rpc.get_rpc_result()
-        print(res)
-        if res[0]:
-            return Response(res[1])
+    if request.method == "GET":
+        return Response(
+            GET_DATA_RPC
+        )
+
+
+    try:
+        if request.method == "POST":
+            data = request.data
+            print(data)
+            rpc = JsonRPCData(data)
+            if rpc.method == JsonRPCData.STOP:
+                rpc.set_result({'res': True})
+            res = rpc.get_rpc_result()
+            print(res)
+            if res[0]:
+                return Response(res[1])
         return Response({"done": True})
+    except Exception as e:
+        raise BadCommand(f"Bad command: {e}")
 
-    return Response({
-        "jsonrpc": "2.0",
-        "methods": {
-            JsonRPCData.STOP: ['<game.name>'],
-            JsonRPCData.CALC: {
-                JsonRPCData.MethodKeys.GAME_NAME: '<game.name>',
-                JsonRPCData.MethodKeys.GAME_ACT: '<action.number>'
-            },
-            JsonRPCData.START: ['<game.name>'],
-            JsonRPCData.TURN: {
-                JsonRPCData.MethodKeys.GAME_NAME: '<game.name>',
-                JsonRPCData.MethodKeys.TURN_ACT: ['start', 'stop', 'remote']
 
-            },
-        }
-    })
 
 
 class UnitViewSet(viewsets.ViewSet):
