@@ -156,6 +156,7 @@ class Unit(TimeStampedModel):
 
     def set_to_dead(self):
         self.location = Region.objects.get(name=DEAD_LOCATION)
+        self.save()
 
     # def damage(self, damage: int):
     #     if self.current_params.health >= damage:

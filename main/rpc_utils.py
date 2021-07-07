@@ -9,7 +9,6 @@ class JsonRPCData:
     CALC = 'calc'
     TURN = 'turn'
 
-
     class MethodKeys:
         STOP = "stop"
         START = 'start'
@@ -17,8 +16,6 @@ class JsonRPCData:
         GAME_NAME = 'game_name'
         GAME_ACT = 'game_act'
         TURN_ACT = 'turn_act'
-
-
 
     def __init__(self, map: dict):
         try:

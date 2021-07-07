@@ -11,18 +11,13 @@ class UnitsSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-
-
 class GamesSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Game
         fields = "__all__"
 
 
-
 class PlayersSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = GameProfile
         fields = "__all__"
