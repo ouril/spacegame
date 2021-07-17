@@ -1,3 +1,4 @@
+import uuid
 from decimal import Decimal
 from enum import Enum
 
@@ -26,14 +27,26 @@ ORDER_TYPE = (
 
 
 class TimeStampedModel(models.Model):
-    created_on = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    # id = models.UUIDField(
+    #     primary_key=True,
+    #     auto_created=True,
+    #     default=uuid.uuid4()
+    # )
+
+    created_on = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     class Meta:
         abstract = True
+        # managed = False
 
 
-class SpaceMap(TimeStampedModel):
+class SpaceMap(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        auto_created=True,
+        default=uuid.uuid4()
+    )
     name = models.CharField(max_length=256, unique=True)
     description = models.TextField(blank=True, null=True)
 
@@ -41,52 +54,82 @@ class SpaceMap(TimeStampedModel):
         return self.name
 
 
-class Game(TimeStampedModel):
-    name = models.CharField(
-        max_length=256,
-        unique=True,
-
-    )
-    game_map = models.ForeignKey(
-        SpaceMap,
-        on_delete=models.DO_NOTHING,
-        related_name="game"
-    )
-    is_in_process = models.BooleanField(default=False)
-    is_in_archive = models.BooleanField(default=False)
-
-    def __str__(self):
-        return self.name
-
-
-class GameProfile(TimeStampedModel):
-    name = models.CharField(
+class Game(models.Model):
+    id = models.UUIDField(
         primary_key=True,
-        max_length=256,
-        unique=True
+        auto_created=True,
+        default=uuid.uuid4()
     )
-    game = models.ForeignKey(
-        Game,
-        on_delete=models.DO_NOTHING,
+    name = models.CharField(
+        max_length=256,
+        # unique=True,
+        default="",
+        primary_key=False,
         null=True,
         blank=True
     )
-    user = models.OneToOneField(
-        User,
-        on_delete=models.DO_NOTHING
+    created_on = models.DateTimeField(auto_now_add=True, null=True, primary_key=False, )
+    game_map = models.ForeignKey(
+        SpaceMap,
+        on_delete=models.DO_NOTHING,
+        default=None,
+        primary_key=False,
+        null=True,
+        related_name="game"
     )
-    orders = models.PositiveSmallIntegerField()
-    current_order = models.PositiveSmallIntegerField()
+    is_in_process = models.BooleanField(default=False, primary_key=False, )
+    is_in_archive = models.BooleanField(default=False, primary_key=False, )
 
     def __str__(self):
         return self.name
 
+    class Meta:
+        unique_together = (('name', 'id', 'game_map', 'is_in_process', 'created_on', ),)
 
-class Region(TimeStampedModel):
+
+class GameProfile(TimeStampedModel):
+    id = models.UUIDField(
+        auto_created=True,
+        primary_key=True,
+        default=uuid.uuid4()
+    )
+    name = models.CharField(
+        max_length=256,
+        primary_key=False,
+        default="",
+        blank=True
+        # unique=True
+    )
+    game = models.ForeignKey(
+        Game,
+        default=None,
+        on_delete=models.DO_NOTHING,
+        null=True,
+        primary_key=False,
+        blank=True
+    )
+    ##
+    # user = models.OneToOneField(
+    #     User,
+    #     primary_key=False,
+    #     default=None,
+    #     null=True,
+    #     on_delete=models.DO_NOTHING
+    # )
+    # orders = models.PositiveSmallIntegerField()
+    # current_order = models.PositiveSmallIntegerField()
+
+    def __str__(self):
+        pass
+        # return self.name
+
+
+class Region(models.Model):
     name = models.CharField(max_length=256, primary_key=True, unique=True)
     description = models.TextField(blank=True, null=True)
     space_map = models.ForeignKey(
         SpaceMap,
+        primary_key=False,
         on_delete=models.DO_NOTHING,
         related_name="location"
     )
@@ -264,6 +307,8 @@ class Equipment(models.Model):
 class Action(TimeStampedModel):
     game = models.ForeignKey(
         Game,
+        default=None,
+        null=True,
         on_delete=models.CASCADE
     )
     number = models.PositiveSmallIntegerField(
@@ -394,7 +439,7 @@ class Resource(TimeStampedModel):
 
 
 class EconomicUnit(TimeStampedModel):
-    id = models.UUIDField(primary_key=True, unique=True, auto_created=True)
+    # id = models.UUIDField(primary_key=True, unique=True, auto_created=True)
     name = models.CharField(
         max_length=256
     )

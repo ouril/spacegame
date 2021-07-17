@@ -51,7 +51,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('created_on', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('name', models.CharField(max_length=256, primary_key=True, serialize=False, unique=True)),
+                ('name', models.CharField(max_length=256, serialize=False, unique=True)),
             ],
             options={
                 'abstract': False,
