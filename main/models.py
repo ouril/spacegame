@@ -131,7 +131,8 @@ class Region(models.Model):
         SpaceMap,
         primary_key=False,
         on_delete=models.DO_NOTHING,
-        related_name="location"
+        related_name="location",
+        db_constraint=False
     )
 
     def __str__(self):

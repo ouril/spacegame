@@ -32,10 +32,9 @@ GET_DATA_RPC = {"jsonrpc": "2.0", "methods": {
 class BadCommand(APIException):
     status_code = 400
 
-    def __init__(self, msg = 'Service temporarily unavailable, try again later.'):
+    def __init__(self, msg='Service temporarily unavailable, try again later.'):
         self.default_detail = msg
         self.detail = msg
-
 
 
 @api_view(['GET', 'POST'])
@@ -58,7 +57,6 @@ def turn(request):
             GET_DATA_RPC
         )
 
-
     try:
         if request.method == "POST":
             data = request.data
@@ -73,8 +71,6 @@ def turn(request):
         return Response({"done": True})
     except Exception as e:
         raise BadCommand(f"Bad command: {e}")
-
-
 
 
 class UnitViewSet(viewsets.ViewSet):
