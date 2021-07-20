@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.db import models
 
 # from .admin_models import TimeStampedModel, SpaceMap, Unit, Region, Ability, Equipment
+from config.models import TurnLevel
 
 DEAD_LOCATION = "dead_location"
 
@@ -387,6 +388,13 @@ class Order(TimeStampedModel):
         on_delete=models.DO_NOTHING,
         null=True,
         blank=True
+    )
+    turn_level = models.OneToOneField(
+        TurnLevel,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        default=None
     )
 
     def __str__(self):
