@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'oi^2gq*xbam(l)e%%rcb(f$finontw9=$4#%f)m8fde93&-cer'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -139,7 +139,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), '/Users/gruzdev/Develop/swgame/spacegame/static']
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), '/Users/gruzdev/Develop/swgame/spacegame/static']
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static/"),
+    # '/var/www/static/',
+]
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
 

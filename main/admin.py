@@ -3,6 +3,7 @@ from .models import *
 # from .admin_models import *
 from django.contrib.auth.admin import UserAdmin
 
+
 # admin.site.register(User, UserAdmin)
 # Register your models here.s
 # @admin.register(OrderType)
@@ -65,21 +66,19 @@ class UnitParamsAdmin(admin.ModelAdmin):
     pass
 
 
-
 @admin.register(Unit)
 class UnitParamsAdmin(admin.ModelAdmin):
     pass
 
-#
-# @admin.register(UnitParams)
-# class UnitParamsAdmin(admin.ModelAdmin):
-#     pass
+
+@admin.register(TurnLevel)
+class TurnLevelParamsAdmin(admin.ModelAdmin):
+    pass
 
 
 @admin.register(UnitType)
 class UnitTypeAdmin(admin.ModelAdmin):
     pass
-
 
 
 @admin.register(Ability)
