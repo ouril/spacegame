@@ -13,25 +13,25 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from main.views import UnitViewSet, GameViewSet, PlayersViewSet, turn
+from main.views import UnitViewSet, GameViewSet, PlayersViewSet, turn, MainView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
+
 )
-
-
-
 
 routers = DefaultRouter()
 routers.register(r'units', UnitViewSet, basename="units")
 routers.register(r'games', GameViewSet, basename="games")
 routers.register(r'players', PlayersViewSet, basename="players")
 
-
 urlpatterns = [
+    path('', MainView.as_view(), name="main"),
     path('admin/', admin.site.urls),
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -42,4 +42,6 @@ urlpatterns = [
 
 ]
 
-
+if settings.DEBUG:
+   urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+   urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

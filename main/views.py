@@ -1,7 +1,9 @@
 from django.contrib.auth.models import User
 
 from django.shortcuts import get_object_or_404
+from django.views import View
 from django.views.decorators.http import require_http_methods
+from django.views.generic import TemplateView
 from rest_framework.decorators import api_view
 
 import json
@@ -27,6 +29,10 @@ GET_DATA_RPC = {"jsonrpc": "2.0", "methods": {
 
     },
 }}
+
+
+class MainView(TemplateView):
+    template_name = "main.html"
 
 
 class BadCommand(APIException):
