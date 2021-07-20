@@ -3,8 +3,11 @@
 import os
 import sys
 
+from django.conf import settings
+
 
 def main():
+
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'swgame.settings')
     try:
         from django.core.management import execute_from_command_line

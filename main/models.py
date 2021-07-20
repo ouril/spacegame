@@ -84,7 +84,7 @@ class Game(models.Model):
         return self.name
 
     class Meta:
-        unique_together = (('name', 'id', 'game_map', 'is_in_process', 'created_on', ),)
+        unique_together = (('name', 'id', 'game_map', 'is_in_process', 'created_on',),)
 
 
 class GameProfile(TimeStampedModel):
@@ -108,20 +108,20 @@ class GameProfile(TimeStampedModel):
         primary_key=False,
         blank=True
     )
-    ##
-    # user = models.OneToOneField(
-    #     User,
-    #     primary_key=False,
-    #     default=None,
-    #     null=True,
-    #     on_delete=models.DO_NOTHING
-    # )
-    # orders = models.PositiveSmallIntegerField()
-    # current_order = models.PositiveSmallIntegerField()
+    #
+    user = models.OneToOneField(
+        User,
+        primary_key=False,
+        default=None,
+        null=True,
+        on_delete=models.DO_NOTHING
+    )
+    orders = models.PositiveSmallIntegerField(default=0)
+    current_order = models.PositiveSmallIntegerField(default=0)
 
     def __str__(self):
-        pass
-        # return self.name
+        # pass
+        return self.name
 
 
 class Region(models.Model):
@@ -244,7 +244,6 @@ class UnitParams(models.Model):
     )
 
     def __str__(self):
-        print(self.unit)
         if self.unit != None:
             return f"UnitParams {self.unit} current: {self.current}"
         return f"UnitParams {self.id}"
@@ -255,7 +254,10 @@ class UnitType(models.Model):
     desc = models.TextField(max_length=2048, blank=True, default="")
     unit = models.ManyToManyField(
         Unit,
-        related_name="unittype"
+        related_name="unittype",
+        default=None,
+        blank=True,
+        null=True,
     )
 
 
@@ -265,7 +267,11 @@ class Ability(models.Model):
     description = models.TextField(blank=True, null=True)
     unit = models.ManyToManyField(
         Unit,
+        default=None,
+        blank=True,
+        null=True,
         related_name='abil'
+
     )
 
     def __str__(self):
