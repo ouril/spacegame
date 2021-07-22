@@ -32,7 +32,7 @@ GET_DATA_RPC = {"jsonrpc": "2.0", "methods": {
 
 
 class MainView(TemplateView):
-    template_name = "main.html"
+    template_name = "about.html"
 
 
 class BadCommand(APIException):
